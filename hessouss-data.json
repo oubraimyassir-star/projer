@@ -1,0 +1,21 @@
+{
+  "drafts": [
+    {
+      "id": 1001,
+      "category": "actualite",
+      "title": "الأخبار العاجلة: تحديثات مباشرة من المغرب",
+      "excerpt": "ملخص سريع لأهم الأحداث اليوم.",
+      "content": "<p>هذا نص مثال لمقال عربي يظهر على الموقع ويُعرض في صفحة المقال.</p>",
+      "date": "2025-12-26T12:00:00.000Z",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Morocco_flag_wave.jpg/800px-Morocco_flag_wave.jpg",
+      "featured": false,
+      "tags": ["المغرب", "عاجل"],
+      "status": "published",
+      "link": "https://www.hessouss.com/",
+      "isDraft": true
+    }
+  ],
+  "overrides": {},
+  "featuredOverrideId": 1001,
+  "recommendedOverrides": {}
+}
