@@ -70,24 +70,6 @@
             <nav class="breadcrumb" id="articleBreadcrumb"></nav>
             <div class="article-header" id="articleHeader">
             </div>
-            <div class="ai-reader" id="aiReader">
-                <div class="ai-reader-controls">
-                    <button id="aiPlay" class="primary-btn">Écouter</button>
-                    <button id="aiPause" class="secondary-btn">Pause</button>
-                    <button id="aiResume" class="secondary-btn">Reprendre</button>
-                    <button id="aiStop" class="secondary-btn">Arrêter</button>
-                    <button id="aiRestart" class="secondary-btn">Lire depuis le début</button>
-                    <label class="ai-reader-rate">
-                        Vitesse
-                        <input id="aiRate" type="range" min="0.8" max="1.6" step="0.1" value="1.0">
-                    </label>
-                    <select id="aiVoice" class="select" style="min-width:200px"></select>
-                    <button id="aiSummarize" class="secondary-btn">Résumé IA</button>
-                </div>
-                <div id="aiReaderMsg" class="ai-reader-msg"></div>
-                <div id="aiProgress" class="ai-reader-progress"></div>
-                <div id="aiSummary" class="ai-summary"></div>
-            </div>
             
             <div class="article-body" id="articleBody">
             </div>
@@ -158,6 +140,14 @@
             </div>
         </div>
     </footer>
+    <div id="aiHidden" style="display:none">
+        <button id="aiPlay"></button>
+        <select id="aiVoice"></select>
+        <div id="aiReaderMsg"></div>
+    </div>
+    <div class="ai-fab" id="aiFab" aria-label="Assistant IA">
+        <img src="logo.png" alt="Hessouss AI" width="28" height="28">
+    </div>
 
     <script src="script.js"></script>
 </body>

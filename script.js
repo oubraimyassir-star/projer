@@ -564,19 +564,20 @@ function renderArticlePage() {
     // Mettre à jour le titre de la page
     document.title = `${article.title} - Hessouss`;
 
-    // Initialiser lecteur vocal IA et résumé local
-    setupAIReader({
-        article,
-        aiReaderMsg,
-        aiSummary,
-        aiPlay,
-        aiPause,
-        aiResume,
-        aiStop,
-        aiRate,
-        aiVoice,
-        aiSummarize
-    });
+    if (aiPlay || aiSummarize || aiVoice || aiReaderMsg || aiRate) {
+        setupAIReader({
+            article,
+            aiReaderMsg,
+            aiSummary,
+            aiPlay,
+            aiPause,
+            aiResume,
+            aiStop,
+            aiRate,
+            aiVoice,
+            aiSummarize
+        });
+    }
 }
 
 function computeReadingTime(html) {
@@ -641,9 +642,22 @@ function setupAIReader(refs) {
     function populateVoices() {
         const voices = window.speechSynthesis.getVoices();
         if (!aiVoice) return;
-        aiVoice.innerHTML = voices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
-        const preferred = voices.find(v => v.lang.startsWith('fr')) || voices.find(v => v.lang.startsWith('ar')) || voices[0];
-        if (preferred) aiVoice.value = preferred.name;
+        const arabicVoices = voices.filter(v => (v.lang || '').toLowerCase().startsWith('ar'));
+        aiVoice.innerHTML = arabicVoices.map(v => `<option value="${v.name}">${v.name} (${v.lang})</option>`).join('');
+        if (arabicVoices.length) {
+            aiVoice.value = arabicVoices[0].name;
+            aiPlay?.removeAttribute('disabled');
+            aiPause?.removeAttribute('disabled');
+            aiResume?.removeAttribute('disabled');
+            aiStop?.removeAttribute('disabled');
+            if (aiReaderMsg) aiReaderMsg.textContent = '';
+        } else {
+            aiPlay?.setAttribute('disabled', 'true');
+            aiPause?.setAttribute('disabled', 'true');
+            aiResume?.setAttribute('disabled', 'true');
+            aiStop?.setAttribute('disabled', 'true');
+            if (aiReaderMsg) aiReaderMsg.textContent = 'Voix arabe indisponible sur ce navigateur.';
+        }
     }
     populateVoices();
     speechSynthesis.onvoiceschanged = populateVoices;
@@ -655,9 +669,9 @@ function setupAIReader(refs) {
         speakNext();
     }
     function getSelectedVoice() {
-        const name = aiVoice?.value;
         const voices = speechSynthesis.getVoices();
-        return voices.find(v => v.name === name) || voices[0];
+        const arabicVoices = voices.filter(v => (v.lang || '').toLowerCase().startsWith('ar'));
+        return arabicVoices[0];
     }
     function speakNext() {
         if (ttsIndex >= ttsQueue.length) {
@@ -845,6 +859,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileBtn = document.getElementById('mobileMenuBtn');
     const navMenu = document.querySelector('.nav-menu');
     const mobileOverlay = document.getElementById('mobileOverlay');
+    const aiFab = document.getElementById('aiFab');
+    const aiFabPanel = document.getElementById('aiFabPanel');
+    const aiFabOverlay = document.getElementById('aiFabOverlay');
     if (mobileBtn && navMenu) {
         mobileBtn.addEventListener('click', () => {
             navMenu.classList.toggle('open');
@@ -869,6 +886,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    function showFabToast(text) {
+        const id = 'ai-fab-toast';
+        let toast = document.getElementById(id);
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = id;
+            toast.className = 'ai-fab-toast';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = text;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+    if (aiFab) {
+        aiFab.addEventListener('click', () => {
+            if (!isArticlePage) return;
+            const btn = document.getElementById('aiPlay');
+            btn?.click();
+            showFabToast('Écouter');
+        });
+    }
     // Si on est sur la page article
     if (isArticlePage) {
         renderArticlePage();
