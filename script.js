@@ -468,7 +468,6 @@ function renderArticlePage() {
             const titleEl = articleHeader.querySelector('.article-title');
             if (titleEl) {
                 titleEl.style.fontFamily = "'Noto Naskh Arabic','Amiri','Scheherazade New', serif";
-                titleEl.style.fontSize = '2.7rem';
             }
         }
         if (breadcrumb) {
