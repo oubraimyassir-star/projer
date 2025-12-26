@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const exportJsonBtn = document.getElementById('exportJson');
     const copyJsonBtn = document.getElementById('copyJson');
     const syncMsg = document.getElementById('syncMsg');
+    const exportApiBtn = document.getElementById('exportApi');
+    const copyApiBtn = document.getElementById('copyApi');
     const statsGrid = document.getElementById('statsGrid');
     const searchInput = document.getElementById('searchInput');
     const filterCategory = document.getElementById('filterCategory');
@@ -253,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!articlesTable) return;
         const q = (searchInput?.value || '').toLowerCase();
         const cat = filterCategory?.value || 'all';
+        const featuredId = parseInt(localStorage.getItem('featuredOverrideId') || '0', 10);
         const rowsSource = [...loadDrafts(), ...newsData];
         let rows = rowsSource.filter(n => (cat === 'all' ? true : n.category === cat));
         if (currentStatus !== 'all') {
@@ -279,7 +282,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${n.title}</td>
                 <td>${getCategoryName(n.category)}</td>
                 <td>${formatDate(n.date)}</td>
-                <td>${n.isDraft ? (n.status === 'published' ? '<span class="badge badge-published">Publié</span>' : '<span class="badge badge-draft">Brouillon</span>') : '<span class="badge badge-published">Publié</span>'}</td>
+                <td>
+                    ${n.isDraft ? (n.status === 'published' ? '<span class="badge badge-published">Publié</span>' : '<span class="badge badge-draft">Brouillon</span>') : '<span class="badge badge-published">Publié</span>'}
+                    ${n.id === featuredId ? '<span class="badge" style="background: var(--hessouss-gold); color: #000; margin-left:6px;">Une</span>' : ''}
+                </td>
                 <td>
                     <button class="secondary-btn" data-action="view" data-id="${n.id}">Voir</button>
                     <button class="secondary-btn" data-action="edit" data-id="${n.id}">Modifier</button>
@@ -297,6 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span>${formatDate(n.date)}</span>
                         <span>•</span>
                         ${n.isDraft ? (n.status === 'published' ? '<span class="badge badge-published">Publié</span>' : '<span class="badge badge-draft">Brouillon</span>') : '<span class="badge badge-published">Publié</span>'}
+                        ${n.id === featuredId ? '<span class="badge" style="background: var(--hessouss-gold); color: #000; margin-left:6px;">Une</span>' : ''}
                     </div>
                     <div class="card-item-actions">
                         <button class="secondary-btn" data-action="view" data-id="${n.id}">Voir</button>
@@ -437,6 +444,37 @@ document.addEventListener('DOMContentLoaded', () => {
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
+    }
+    function mergePublishedDraftsInto(items) {
+        const drafts = loadDrafts().filter(d => d.status === 'published');
+        const existing = new Set(items.map(n => n.id));
+        const toAdd = drafts.filter(d => !existing.has(d.id));
+        return [...toAdd, ...items];
+    }
+    function applyOverridesTo(items) {
+        const overrides = loadOverrides();
+        return items.map(n => {
+            const ov = overrides[n.id];
+            if (!ov) return n;
+            return {
+                ...n,
+                title: ov.title || n.title,
+                excerpt: ov.excerpt || n.excerpt,
+                content: ov.content || n.content,
+                category: ov.category || n.category,
+                image: ov.image || n.image,
+                link: ov.link || n.link,
+                tags: Array.isArray(ov.tags) ? ov.tags : n.tags
+            };
+        });
+    }
+    function buildPublicApi() {
+        let items = Array.isArray(newsData) ? newsData.slice() : [];
+        items = mergePublishedDraftsInto(items);
+        items = applyOverridesTo(items);
+        const featuredId = parseInt(localStorage.getItem('featuredOverrideId') || '0', 10);
+        const recommendations = JSON.parse(localStorage.getItem('recommendedOverrides') || '{}');
+        return { items, featuredId, recommendations };
     }
     function openEditModal(item) {
         editingId = item.id;
@@ -652,6 +690,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (syncMsg) syncMsg.textContent = 'JSON copié dans le presse-papiers.';
         } catch {
             if (syncMsg) syncMsg.textContent = 'Impossible de copier. Essayez l’export.';
+        }
+    });
+    exportApiBtn?.addEventListener('click', () => {
+        const api = buildPublicApi();
+        downloadJson('hessouss-api.json', api);
+        if (syncMsg) syncMsg.textContent = 'API exportée. Uploadez hessouss-api.json à la racine.';
+    });
+    copyApiBtn?.addEventListener('click', async () => {
+        try {
+            const api = buildPublicApi();
+            await navigator.clipboard.writeText(JSON.stringify(api, null, 2));
+            if (syncMsg) syncMsg.textContent = 'API JSON copié.';
+        } catch {
+            if (syncMsg) syncMsg.textContent = 'Impossible de copier l’API.';
         }
     });
 
