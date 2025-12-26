@@ -843,6 +843,13 @@ window.addEventListener('scroll', () => {
 document.addEventListener('DOMContentLoaded', () => {
     mergeDraftsIntoNews();
     applyAdminOverrides();
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.querySelector('.nav-menu');
+    if (mobileBtn && navMenu) {
+        mobileBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('open');
+        });
+    }
     // Si on est sur la page article
     if (isArticlePage) {
         renderArticlePage();
