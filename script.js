@@ -4,6 +4,27 @@
 
 // Détection de la page actuelle
 const isArticlePage = window.location.pathname.includes('article.html');
+let serverAdminData = null;
+async function fetchServerAdminData() {
+    try {
+        const res = await fetch('hessouss-data.json', { cache: 'no-store' });
+        if (res.ok) {
+            serverAdminData = await res.json();
+            if (Array.isArray(serverAdminData.drafts)) {
+                localStorage.setItem('adminDrafts', JSON.stringify(serverAdminData.drafts));
+            }
+            if (serverAdminData.overrides && typeof serverAdminData.overrides === 'object') {
+                localStorage.setItem('adminOverrides', JSON.stringify(serverAdminData.overrides));
+            }
+            if (serverAdminData.featuredOverrideId) {
+                localStorage.setItem('featuredOverrideId', String(serverAdminData.featuredOverrideId));
+            }
+            if (serverAdminData.recommendedOverrides && typeof serverAdminData.recommendedOverrides === 'object') {
+                localStorage.setItem('recommendedOverrides', JSON.stringify(serverAdminData.recommendedOverrides));
+            }
+        }
+    } catch {}
+}
 
 // News Data (Fallback statique)
 let newsData = [
@@ -467,7 +488,8 @@ function renderArticlePage() {
             }
             const titleEl = articleHeader.querySelector('.article-title');
             if (titleEl) {
-                titleEl.style.fontFamily = "'Noto Naskh Arabic','Amiri','Scheherazade New', serif";
+                titleEl.style.fontFamily = "'Noto Sans Arabic','Tajawal','Almarai', sans-serif";
+                titleEl.style.fontWeight = '700';
             }
         }
         if (breadcrumb) {
@@ -485,7 +507,8 @@ function renderArticlePage() {
             contents.forEach(c => c.style.textAlign = 'right');
             const items = relatedGrid.querySelectorAll('.related-title-item');
             items.forEach(i => {
-                i.style.fontFamily = "'Noto Naskh Arabic','Amiri','Scheherazade New', serif";
+                i.style.fontFamily = "'Noto Sans Arabic','Tajawal','Almarai', sans-serif";
+                i.style.fontWeight = '700';
                 i.style.fontSize = '1.15rem';
             });
         }
@@ -907,20 +930,18 @@ document.addEventListener('DOMContentLoaded', () => {
             showFabToast('Écouter');
         });
     }
-    // Si on est sur la page article
-    if (isArticlePage) {
-        renderArticlePage();
-    } else {
-        // Rendu initial de la home (avec données statiques temporaires)
-        renderHero();
-        renderHomeExtras();
-        renderNews();
-        observeNewsCards();
-
-        // Récupération des données dynamiques
-        fetchNews();
-
-        // Activer le filtrage via paramètre d'URL ?category=...
+    fetchServerAdminData().then(() => {
+        if (isArticlePage) {
+            renderArticlePage();
+        } else {
+            renderHero();
+            renderHomeExtras();
+            renderNews();
+            observeNewsCards();
+            fetchNews();
+        }
+    });
+    // Activer le filtrage via paramètre d'URL ?category=...
         const params = new URLSearchParams(window.location.search);
         const catParam = params.get('category');
         if (catParam) {

@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveRecs = document.getElementById('saveRecs');
     const clearRecs = document.getElementById('clearRecs');
     const recsMsg = document.getElementById('recsMsg');
+    const exportJsonBtn = document.getElementById('exportJson');
+    const copyJsonBtn = document.getElementById('copyJson');
+    const syncMsg = document.getElementById('syncMsg');
     const statsGrid = document.getElementById('statsGrid');
     const searchInput = document.getElementById('searchInput');
     const filterCategory = document.getElementById('filterCategory');
@@ -417,6 +420,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function saveOverrides(map) {
         localStorage.setItem('adminOverrides', JSON.stringify(map));
     }
+    function buildExportData() {
+        const drafts = loadDrafts();
+        const overrides = loadOverrides();
+        const featuredOverrideId = parseInt(localStorage.getItem('featuredOverrideId') || '0', 10);
+        const recommendedOverrides = JSON.parse(localStorage.getItem('recommendedOverrides') || '{}');
+        return { drafts, overrides, featuredOverrideId, recommendedOverrides };
+    }
+    function downloadJson(filename, data) {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+    }
     function openEditModal(item) {
         editingId = item.id;
         editMsg.textContent = '';
@@ -617,6 +638,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (id) {
             localStorage.setItem('featuredOverrideId', String(id));
             featuredMsg.textContent = 'Article à la Une enregistré';
+        }
+    });
+    exportJsonBtn?.addEventListener('click', () => {
+        const data = buildExportData();
+        downloadJson('hessouss-data.json', data);
+        if (syncMsg) syncMsg.textContent = 'Fichier exporté. Uploadez-le sur GitHub à la racine du site.';
+    });
+    copyJsonBtn?.addEventListener('click', async () => {
+        try {
+            const data = buildExportData();
+            await navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+            if (syncMsg) syncMsg.textContent = 'JSON copié dans le presse-papiers.';
+        } catch {
+            if (syncMsg) syncMsg.textContent = 'Impossible de copier. Essayez l’export.';
         }
     });
 
