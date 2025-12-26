@@ -27,6 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const syncMsg = document.getElementById('syncMsg');
     const exportApiBtn = document.getElementById('exportApi');
     const copyApiBtn = document.getElementById('copyApi');
+    const ghOwnerInput = document.getElementById('ghOwner');
+    const ghRepoInput = document.getElementById('ghRepo');
+    const ghBranchInput = document.getElementById('ghBranch');
+    const ghApiPathInput = document.getElementById('ghApiPath');
+    const ghTokenInput = document.getElementById('ghToken');
+    const ghAutoPushInput = document.getElementById('ghAutoPush');
+    const ghSaveBtn = document.getElementById('ghSave');
+    const ghPushApiBtn = document.getElementById('ghPushApi');
+    const ghMsg = document.getElementById('ghMsg');
     const statsGrid = document.getElementById('statsGrid');
     const searchInput = document.getElementById('searchInput');
     const filterCategory = document.getElementById('filterCategory');
@@ -382,6 +391,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderTable();
                     featuredMsg.textContent = 'Statut mis à jour';
                     updateTabCounts();
+                    const cfg = getGithubSettings();
+                    if (cfg && cfg.autoPush) pushPublicApi();
                 }
             }
         });
@@ -416,6 +427,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         renderTable();
                         featuredMsg.textContent = 'Statut mis à jour';
                         updateTabCounts();
+                        const cfg = getGithubSettings();
+                        if (cfg && cfg.autoPush) pushPublicApi();
                     }
                 }
             });
@@ -475,6 +488,78 @@ document.addEventListener('DOMContentLoaded', () => {
         const featuredId = parseInt(localStorage.getItem('featuredOverrideId') || '0', 10);
         const recommendations = JSON.parse(localStorage.getItem('recommendedOverrides') || '{}');
         return { items, featuredId, recommendations };
+    }
+    const GH_SETTINGS_KEY = 'githubSettings';
+    function getGithubSettings() {
+        try {
+            return JSON.parse(localStorage.getItem(GH_SETTINGS_KEY) || '{}');
+        } catch { return {}; }
+    }
+    function saveGithubSettings(cfg) {
+        localStorage.setItem(GH_SETTINGS_KEY, JSON.stringify(cfg));
+    }
+    function base64EncodeUnicode(str) {
+        const utf8Bytes = new TextEncoder().encode(str);
+        let binary = '';
+        utf8Bytes.forEach(b => binary += String.fromCharCode(b));
+        return btoa(binary);
+    }
+    async function getGitHubFileSha(owner, repo, path, branch, token) {
+        const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
+        const res = await fetch(url, {
+            headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' }
+        });
+        if (!res.ok) return null;
+        const data = await res.json();
+        return data.sha || null;
+    }
+    async function pushGitHubFile({ owner, repo, branch, path, token, content, message }) {
+        const sha = await getGitHubFileSha(owner, repo, path, branch, token);
+        const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+        const body = {
+            message,
+            content: base64EncodeUnicode(content),
+            branch
+        };
+        if (sha) body.sha = sha;
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/vnd.github+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(errText);
+        }
+        return await res.json();
+    }
+    async function pushPublicApi() {
+        const cfg = getGithubSettings();
+        if (!cfg || !cfg.owner || !cfg.repo || !cfg.branch || !cfg.path || !cfg.token) {
+            if (ghMsg) ghMsg.textContent = 'Paramètres GitHub incomplets. Enregistrez owner, repo, branche, fichier et token.';
+            return;
+        }
+        try {
+            const api = buildPublicApi();
+            const content = JSON.stringify(api, null, 2);
+            if (ghMsg) ghMsg.textContent = 'Push en cours...';
+            await pushGitHubFile({
+                owner: cfg.owner,
+                repo: cfg.repo,
+                branch: cfg.branch,
+                path: cfg.path,
+                token: cfg.token,
+                content,
+                message: 'Dashboard: mise à jour automatique de hessouss-api.json'
+            });
+            if (ghMsg) ghMsg.textContent = 'API poussée sur GitHub avec succès.';
+        } catch (e) {
+            if (ghMsg) ghMsg.textContent = 'Échec du push: ' + (e?.message || 'Erreur inconnue');
+        }
     }
     function openEditModal(item) {
         editingId = item.id;
@@ -593,6 +678,8 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTable();
         fillSelect(featuredSelect, [...drafts, ...newsData]);
         updateTabCounts();
+        const cfg = getGithubSettings();
+        if (cfg && cfg.autoPush) pushPublicApi();
         setTimeout(closeCreateModal, 800);
     }
     if (newImageFile) {
@@ -705,6 +792,21 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch {
             if (syncMsg) syncMsg.textContent = 'Impossible de copier l’API.';
         }
+    });
+    ghSaveBtn?.addEventListener('click', () => {
+        const cfg = {
+            owner: ghOwnerInput.value.trim(),
+            repo: ghRepoInput.value.trim(),
+            branch: ghBranchInput.value.trim(),
+            path: ghApiPathInput.value.trim(),
+            token: ghTokenInput.value.trim(),
+            autoPush: !!ghAutoPushInput.checked
+        };
+        saveGithubSettings(cfg);
+        if (ghMsg) ghMsg.textContent = 'Paramètres GitHub enregistrés localement.';
+    });
+    ghPushApiBtn?.addEventListener('click', () => {
+        pushPublicApi();
     });
 
     document.getElementById('saveCreds').addEventListener('click', () => {

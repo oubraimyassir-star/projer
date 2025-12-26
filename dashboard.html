@@ -83,6 +83,40 @@
                                 </div>
                                 <div id="syncMsg" style="color:var(--text-secondary);min-height:20px;margin-top:8px;"></div>
                             </div>
+                            <div class="card" style="margin-top:var(--spacing-md);">
+                                <h3>Push GitHub (optionnel)</h3>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-sm);max-width:780px;">
+                                    <div>
+                                        <label>Owner</label>
+                                        <input id="ghOwner" class="input" type="text" placeholder="owner (ex: oubraimyassir-star)" value="oubraimyassir-star">
+                                    </div>
+                                    <div>
+                                        <label>Repo</label>
+                                        <input id="ghRepo" class="input" type="text" placeholder="repo (ex: projer)" value="projer">
+                                    </div>
+                                    <div>
+                                        <label>Branche</label>
+                                        <input id="ghBranch" class="input" type="text" placeholder="main" value="main">
+                                    </div>
+                                    <div>
+                                        <label>Fichier API</label>
+                                        <input id="ghApiPath" class="input" type="text" placeholder="hessouss-api.json" value="hessouss-api.json">
+                                    </div>
+                                    <div style="grid-column:1 / -1">
+                                        <label>Token GitHub (PAT) — sera stocké localement</label>
+                                        <input id="ghToken" class="input" type="password" placeholder="ghp_..." autocomplete="off">
+                                    </div>
+                                    <div style="grid-column:1 / -1;display:flex;align-items:center;gap:8px;">
+                                        <input id="ghAutoPush" type="checkbox">
+                                        <label for="ghAutoPush">Auto push après publication/modification</label>
+                                    </div>
+                                </div>
+                                <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;margin-top:8px;">
+                                    <button id="ghSave" class="primary-btn">Enregistrer paramètres</button>
+                                    <button id="ghPushApi" class="secondary-btn">Pousser API maintenant</button>
+                                </div>
+                                <div id="ghMsg" style="color:var(--text-secondary);min-height:20px;margin-top:8px;"></div>
+                            </div>
                         </section>
 
                         <section id="featured" class="news-section">
