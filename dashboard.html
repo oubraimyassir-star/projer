@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Hessouss</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">📰</span>
+                <span class="logo-text">Hessouss</span>
+            </a>
+            <nav class="nav">
+                <ul class="nav-menu">
+                    <li><a class="nav-link" href="index.html">Accueil</a></li>
+                </ul>
+            </nav>
+            <button id="logoutBtn" class="theme-toggle" title="Déconnexion">⎋</button>
+        </div>
+    </header>
+
+    <main class="section">
+        <div class="container">
+            <h1 class="section-title">Dashboard privé</h1>
+
+            <div id="pinOverlay" class="modal-overlay">
+                <div class="modal">
+                    <h2 style="margin-bottom:var(--spacing-md);">Code PIN</h2>
+                    <input id="pinInput" type="password" placeholder="Entrer le code PIN" style="padding:12px;border:1px solid var(--border-color);border-radius:8px;width:100%;margin-bottom:12px;">
+                    <button id="pinSubmit" class="primary-btn">Valider</button>
+                    <div id="pinMsg" style="color:var(--danger);min-height:20px;margin-top:8px;"></div>
+                </div>
+            </div>
+
+            <div class="admin-layout">
+                <aside class="admin-sidebar">
+                    <div class="admin-brand">Hessouss Admin</div>
+                    <nav class="admin-nav">
+                        <a href="#overview" class="admin-link"><img src="icons/dashboard.svg" alt="" class="admin-icon"> Vue d’ensemble</a>
+                        <a href="#articles" class="admin-link"><img src="icons/articles.svg" alt="" class="admin-icon"> Articles</a>
+                        <a href="#featured" class="admin-link"><img src="icons/star.svg" alt="" class="admin-icon"> À la Une</a>
+                        <a href="#recommendations" class="admin-link"><img src="icons/recommendations.svg" alt="" class="admin-icon"> Recommandations</a>
+                        <a href="#security" class="admin-link"><img src="icons/security.svg" alt="" class="admin-icon"> Sécurité</a>
+                    </nav>
+                </aside>
+
+                <div class="admin-content">
+                    <div class="admin-mobilebar">
+                        <button id="mobileMenuToggle" class="icon-btn"><img src="icons/menu.svg" alt=""> Menu</button>
+                        <div class="mobile-title">Dashboard</div>
+                    </div>
+                    <div id="loginPanel" class="card">
+                        <h2 style="margin-bottom: var(--spacing-md);">Connexion</h2>
+                        <div style="display:grid;grid-template-columns:1fr;gap:var(--spacing-md);max-width:420px;">
+                            <input id="adminUser" type="text" placeholder="Utilisateur" style="padding:12px;border:1px solid var(--border-color);border-radius:8px;">
+                            <input id="adminPass" type="password" placeholder="Mot de passe" style="padding:12px;border:1px solid var(--border-color);border-radius:8px;">
+                            <button id="loginBtn" class="primary-btn">Se connecter</button>
+                            <div id="loginMsg" style="color:var(--danger);min-height:20px;"></div>
+                        </div>
+                    </div>
+
+                    <div id="dashboardPanels" class="hidden">
+                        <section id="overview" class="news-section">
+                            <h2 class="section-title">Vue d’ensemble</h2>
+                            <div class="metrics-header" id="metricsHeader"></div>
+                            <div class="stats-grid" id="statsGrid"></div>
+                        </section>
+
+                        <section id="featured" class="news-section">
+                            <h2 class="section-title">Article à la Une</h2>
+                            <div style="display:grid;grid-template-columns:1fr auto;gap:var(--spacing-md);align-items:center;">
+                                <select id="featuredSelect" style="padding:10px;border:1px solid var(--border-color);border-radius:6px;"></select>
+                                <button id="saveFeatured" class="primary-btn">Définir</button>
+                            </div>
+                            <div id="featuredMsg" style="margin-top:var(--spacing-sm);color:var(--text-secondary);"></div>
+                        </section>
+
+                        <section id="recommendations" class="news-section">
+                            <h2 class="section-title">Recommandations manuelles</h2>
+                            <div style="display:grid;grid-template-columns:1fr;gap:var(--spacing-md);max-width:680px;">
+                                <label>Article source</label>
+                                <select id="sourceArticle" style="padding:10px;border:1px solid var(--border-color);border-radius:6px;"></select>
+                                <label>Choisir jusqu’à 3 articles recommandés</label>
+                                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--spacing-sm);">
+                                    <select id="rec1" style="padding:10px;border:1px solid var(--border-color);border-radius:6px;"></select>
+                                    <select id="rec2" style="padding:10px;border:1px solid var(--border-color);border-radius:6px;"></select>
+                                    <select id="rec3" style="padding:10px;border:1px solid var(--border-color);border-radius:6px;"></select>
+                                </div>
+                                <div style="display:flex;gap:var(--spacing-md);">
+                                    <button id="saveRecs" class="primary-btn">Enregistrer</button>
+                                    <button id="clearRecs" class="secondary-btn">Effacer</button>
+                                </div>
+                                <div id="recsMsg" style="color:var(--text-secondary);"></div>
+                            </div>
+                        </section>
+
+                        <section id="security" class="news-section">
+                            <h2 class="section-title">Paramètres de sécurité</h2>
+                            <div class="card" style="display:grid;grid-template-columns:1fr;gap:var(--spacing-md);max-width:680px;">
+                                <h3>Identifiants</h3>
+                                <input id="settingsUser" type="text" placeholder="Utilisateur" style="padding:12px;border:1px solid var(--border-color);border-radius:8px;">
+                                <input id="settingsPass" type="password" placeholder="Nouveau mot de passe" style="padding:12px;border:1px solid var(--border-color);border-radius:8px;">
+                                <button id="saveCreds" class="primary-btn">Enregistrer les identifiants</button>
+                                <div id="credsMsg" style="color:var(--text-secondary);"></div>
+                                <h3>Code PIN</h3>
+                                <input id="settingsPIN" type="password" placeholder="Nouveau code PIN" style="padding:12px;border:1px solid var(--border-color);border-radius:8px;">
+                                <button id="savePIN" class="primary-btn">Enregistrer le PIN</button>
+                                <div id="pinSaveMsg" style="color:var(--text-secondary);"></div>
+                            </div>
+                        </section>
+
+                        <section id="articles" class="news-section">
+                            <h2 class="section-title">Gestion des articles</h2>
+                            <div class="card">
+                                <div class="toolbar">
+                                    <input id="searchInput" type="text" placeholder="Rechercher un article..." class="input">
+                                    <select id="filterCategory" class="select"></select>
+                                    <button id="createArticleBtn" class="icon-btn" title="Créer un article"><img src="icons/plus.svg" alt="Créer"> Créer</button>
+                                </div>
+                                <div class="admin-tabs">
+                                    <button id="tabAll" class="tab-btn active">Tous</button>
+                                    <button id="tabDraft" class="tab-btn">Brouillons</button>
+                                    <button id="tabPublished" class="tab-btn">Publiés</button>
+                                </div>
+                                <div class="table-wrap">
+                                <table class="data-table" id="articlesTable">
+                                    <thead>
+                                        <tr>
+                                            <th data-sort="title">Titre</th>
+                                            <th data-sort="category">Catégorie</th>
+                                            <th data-sort="date">Date</th>
+                                            <th>Statut</th>
+                                            <th style="width:260px">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                                </div>
+                                <div class="card-list" id="articlesCards"></div>
+                                <div class="pagination">
+                                    <button id="prevPage" class="secondary-btn">‹ Précédent</button>
+                                    <div id="pageNumbers" class="page-numbers"></div>
+                                    <button id="nextPage" class="secondary-btn">Suivant ›</button>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <div id="mobileOverlay" class="mobile-overlay"></div>
+
+            <div id="createOverlay" class="modal-overlay">
+                <div class="modal">
+                    <h2 style="margin-bottom:var(--spacing-md);">Créer un nouvel article</h2>
+                    <div style="display:grid;grid-template-columns:1fr;gap:var(--spacing-sm);">
+                        <input id="newTitle" class="input" type="text" placeholder="Titre">
+                            <textarea id="newExcerpt" class="input" placeholder="Résumé (140-200 caractères)" style="min-height:80px;"></textarea>
+                            <textarea id="newContent" class="input" placeholder="Contenu HTML (optionnel)" style="min-height:140px;"></textarea>
+                            <input id="newTags" class="input" type="text" placeholder="Tags (séparés par des virgules)">
+                            <select id="newCategory" class="select">
+                                <option value="actualite">Actualité</option>
+                                <option value="politique">Politique</option>
+                                <option value="economie">Économie</option>
+                                <option value="sport">Sport</option>
+                                <option value="culture">Culture</option>
+                                <option value="technologie">Technologie</option>
+                            </select>
+                            <select id="newStatus" class="select">
+                                <option value="draft">Brouillon</option>
+                                <option value="published">Publié</option>
+                            </select>
+                            <input id="newSource" class="input" type="url" placeholder="Source/URL de l’article (optionnel)">
+                            <input id="newImageFile" class="input" type="file" accept="image/*">
+                            <img id="newImagePreview" class="image-preview" alt="" style="display:none;">
+                            <input id="newImage" class="input" type="url" placeholder="URL de l’image (optionnel)">
+                            <div style="display:flex;gap:var(--spacing-sm);justify-content:flex-end;margin-top:var(--spacing-sm);">
+                                <button id="cancelCreate" class="secondary-btn">Annuler</button>
+                                <button id="saveCreate" class="primary-btn">Publier</button>
+                            </div>
+                            <div id="createMsg" style="color:var(--text-secondary);min-height:20px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="editOverlay" class="modal-overlay">
+                <div class="modal">
+                    <h2 style="margin-bottom:var(--spacing-md);">Modifier l’article</h2>
+                    <div style="display:grid;grid-template-columns:1fr;gap:var(--spacing-sm);">
+                        <input id="editTitle" class="input" type="text" placeholder="Titre">
+                        <textarea id="editExcerpt" class="input" placeholder="Résumé" style="min-height:80px;"></textarea>
+                        <textarea id="editContent" class="input" placeholder="Contenu HTML" style="min-height:140px;"></textarea>
+                        <input id="editTags" class="input" type="text" placeholder="Tags (virgules)">
+                        <select id="editCategory" class="select">
+                            <option value="actualite">Actualité</option>
+                            <option value="politique">Politique</option>
+                            <option value="economie">Économie</option>
+                            <option value="sport">Sport</option>
+                            <option value="culture">Culture</option>
+                            <option value="technologie">Technologie</option>
+                        </select>
+                        <input id="editImageFile" class="input" type="file" accept="image/*">
+                        <img id="editImagePreview" class="image-preview" alt="" style="display:none;">
+                        <input id="editImage" class="input" type="url" placeholder="URL de l’image">
+                        <input id="editSource" class="input" type="url" placeholder="Source/URL">
+                        <div style="display:flex;gap:var(--spacing-sm);justify-content:flex-end;margin-top:var(--spacing-sm);">
+                            <button id="cancelEdit" class="secondary-btn">Annuler</button>
+                            <button id="saveEdit" class="primary-btn">Enregistrer</button>
+                        </div>
+                        <div id="editMsg" style="color:var(--text-secondary);min-height:20px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hessouss. Dashboard privé.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

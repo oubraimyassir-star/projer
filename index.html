@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Hessouss - Votre source d'informations pour les dernières nouvelles du Maroc. Politique, économie, sport, culture et technologie.">
+    <meta name="keywords" content="Maroc, actualités, news, politique, économie, sport, culture, technologie, hessouss">
+    <meta name="author" content="Hessouss">
+    <title>Hessouss - Les Dernières Nouvelles du Maroc</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="spinner.css">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <a href="#" class="logo">
+                <img src="logo.png" alt="Hessouss Logo" class="logo-image">
+                <span class="logo-text">Hessouss</span>
+            </a>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#" class="nav-link">Accueil</a></li>
+                    <li><a href="#" class="nav-link">Politique</a></li>
+                    <li><a href="#" class="nav-link">Économie</a></li>
+                    <li><a href="#" class="nav-link">Sport</a></li>
+                    <li><a href="#" class="nav-link">Culture</a></li>
+                    <li>
+                        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                            <span id="themeIcon">🌙</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content" id="heroContent">
+                <!-- Hero content will be dynamically loaded -->
+            </div>
+            <div class="hero-extras">
+                <div class="trends-bar">
+                    <span class="trends-title">Tendances</span>
+                    <div id="trendsChips" class="trends-chips"></div>
+                </div>
+                <div id="quickStats" class="quick-stats"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORY TABS -->
+    <section class="categories">
+        <div class="categories-container">
+            <button class="category-tab active" data-category="all">Toutes</button>
+            <button class="category-tab" data-category="politique">Politique</button>
+            <button class="category-tab" data-category="economie">Économie</button>
+            <button class="category-tab" data-category="sport">Sport</button>
+            <button class="category-tab" data-category="culture">Culture</button>
+            <button class="category-tab" data-category="technologie">Technologie</button>
+        </div>
+    </section>
+
+    <!-- NEWS SECTION -->
+    <section class="news-section">
+        <div class="news-container">
+            <div class="section-header">
+                <h2 class="section-title">Dernières Actualités</h2>
+                <p class="section-subtitle">Restez informé avec les nouvelles les plus récentes du Maroc</p>
+            </div>
+
+            <div class="news-grid" id="newsGrid">
+                <!-- Loader -->
+                <div class="loading-container" id="newsLoader">
+                    <span class="loader"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Hessouss</h3>
+                    <p>Votre source fiable pour les dernières nouvelles et actualités du Maroc. Nous couvrons la
+                        politique, l'économie, le sport, la culture et la technologie.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/hessousspress" class="social-link" aria-label="Facebook" title="Facebook" target="_blank" rel="noopener"><img src="icons/facebook.svg" alt="Facebook" width="22" height="22"></a>
+                        <a href="https://www.facebook.com/hessouss" class="social-link" aria-label="Facebook" title="Facebook (Hessouss)" target="_blank" rel="noopener"><img src="icons/facebook.svg" alt="Facebook (Hessouss)" width="22" height="22"></a>
+                        <a href="https://twitter.com/hessouss" class="social-link" aria-label="Twitter" title="Twitter/X" target="_blank" rel="noopener"><img src="icons/x.svg" alt="X (Twitter)" width="22" height="22"></a>
+                        <a href="https://instagram.com/hessouss" class="social-link" aria-label="Instagram" title="Instagram" target="_blank" rel="noopener"><img src="icons/instagram.svg" alt="Instagram" width="22" height="22"></a>
+                        <a href="#" class="social-link" aria-label="YouTube" title="YouTube"><img src="icons/youtube.svg" alt="YouTube" width="22" height="22"></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Navigation</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Accueil</a></li>
+                        <li><a href="#">À propos</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Équipe</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Catégories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Politique</a></li>
+                        <li><a href="#">Économie</a></li>
+                        <li><a href="#">Sport</a></li>
+                        <li><a href="#">Culture</a></li>
+                        <li><a href="#">Technologie</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Légal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Mentions légales</a></li>
+                        <li><a href="#">Politique de confidentialité</a></li>
+                        <li><a href="#">Conditions d'utilisation</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hessouss. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

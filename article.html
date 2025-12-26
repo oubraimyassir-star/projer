@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Hessouss - Votre source d'informations pour les dernières nouvelles du Maroc. Politique, économie, sport, culture et technologie.">
+    <meta name="keywords" content="Maroc, actualités, news, politique, économie, sport, culture, technologie, hessouss">
+    <meta name="author" content="Hessouss">
+    <title>Hessouss - Article</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="article_styles_append.css">
+    <style>
+        .breadcrumb {display:flex;gap:8px;align-items:center;color:var(--text-tertiary);font-size:.9rem;margin-bottom:1rem}
+        .breadcrumb a {color:var(--text-secondary);text-decoration:none}
+        .breadcrumb a:hover {color:var(--hessouss-blue)}
+        .article-header .article-title {margin-top:.25rem}
+        .article-meta {margin-top:.5rem}
+        .share-bar {display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:1.25rem 0;padding:.75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);background:var(--bg-secondary)}
+        .share-title {font-weight:700;color:var(--text-secondary);margin-right:.5rem}
+        .share-btn {display:inline-flex;align-items:center;gap:.25rem;padding:.5rem .75rem;border:1px solid var(--border-color);border-radius:var(--radius-md);background:var(--bg-primary);color:var(--text-secondary);text-decoration:none;font-weight:600;transition:all .2s}
+        .share-btn:hover {transform:translateY(-2px);border-color:var(--hessouss-blue);color:var(--hessouss-blue)}
+        .source-link {display:inline-flex;align-items:center;gap:.25rem;color:var(--hessouss-blue);text-decoration:none;font-weight:600;margin-top:.75rem}
+        .tags {display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+        .tag {background:var(--bg-tertiary);color:var(--text-secondary);padding:.35rem .6rem;border-radius:999px;font-size:.85rem;border:1px solid var(--border-color)}
+        .related {margin-top:2rem}
+        .related-title {font-family:var(--font-display);font-weight:700;font-size:1.4rem;margin-bottom:1rem;color:var(--text-primary)}
+        .related-grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+        .related-card {background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm);transition:transform .2s}
+        .related-card:hover {transform:translateY(-4px)}
+        .related-img {width:100%;height:140px;object-fit:cover}
+        .related-content {padding:.75rem}
+        .related-cat {display:inline-block;margin-bottom:.5rem;background:var(--hessouss-blue);color:#fff;padding:.2rem .5rem;border-radius:6px;font-size:.75rem;font-weight:700}
+        .related-title-item {font-weight:700;color:var(--text-primary);line-height:1.3}
+        .related-meta {color:var(--text-tertiary);font-size:.85rem;margin-top:.4rem}
+        @media (max-width:768px){.share-bar{justify-content:center}}
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="logo.png" alt="Hessouss Logo" class="logo-image">
+                <span class="logo-text">Hessouss</span>
+            </a>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Accueil</a></li>
+                    <li><a href="index.html" class="nav-link">Politique</a></li>
+                    <li><a href="index.html" class="nav-link">Économie</a></li>
+                    <li><a href="index.html" class="nav-link">Sport</a></li>
+                    <li><a href="index.html" class="nav-link">Culture</a></li>
+                    <li>
+                        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                            <span id="themeIcon">🌙</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ARTICLE SECTION -->
+    <section class="article-section">
+        <div class="article-container">
+            <nav class="breadcrumb" id="articleBreadcrumb"></nav>
+            <div class="article-header" id="articleHeader">
+            </div>
+            <div class="ai-reader" id="aiReader">
+                <div class="ai-reader-controls">
+                    <button id="aiPlay" class="primary-btn">Écouter</button>
+                    <button id="aiPause" class="secondary-btn">Pause</button>
+                    <button id="aiResume" class="secondary-btn">Reprendre</button>
+                    <button id="aiStop" class="secondary-btn">Arrêter</button>
+                    <button id="aiRestart" class="secondary-btn">Lire depuis le début</button>
+                    <label class="ai-reader-rate">
+                        Vitesse
+                        <input id="aiRate" type="range" min="0.8" max="1.6" step="0.1" value="1.0">
+                    </label>
+                    <select id="aiVoice" class="select" style="min-width:200px"></select>
+                    <button id="aiSummarize" class="secondary-btn">Résumé IA</button>
+                </div>
+                <div id="aiReaderMsg" class="ai-reader-msg"></div>
+                <div id="aiProgress" class="ai-reader-progress"></div>
+                <div id="aiSummary" class="ai-summary"></div>
+            </div>
+            
+            <div class="article-body" id="articleBody">
+            </div>
+            <div class="share-bar" id="articleShare"></div>
+            <div class="tags" id="articleTags"></div>
+            <div class="related" id="relatedArticles">
+                <h3 class="related-title">Articles recommandés</h3>
+                <div class="related-grid" id="relatedGrid"></div>
+            </div>
+
+            <div class="article-footer">
+                <a href="index.html" class="back-button">← Retour à l'accueil</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Hessouss</h3>
+                    <p>Votre source fiable pour les dernières nouvelles et actualités du Maroc. Nous couvrons la
+                        politique, l'économie, le sport, la culture et la technologie.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/hessousspress" class="social-link" aria-label="Facebook" title="الصفحة الفايسبوك" target="_blank" rel="noopener"><img src="icons/facebook.svg" alt="Facebook" width="22" height="22"></a>
+                        <a href="https://www.facebook.com/hessouss" class="social-link" aria-label="Facebook" title="Facebook (Hessouss)" target="_blank" rel="noopener"><img src="icons/facebook.svg" alt="Facebook (Hessouss)" width="22" height="22"></a>
+                        <a href="https://twitter.com/hessouss" class="social-link" aria-label="Twitter" title="Twitter/X" target="_blank" rel="noopener"><img src="icons/x.svg" alt="X (Twitter)" width="22" height="22"></a>
+                        <a href="https://instagram.com/hessouss" class="social-link" aria-label="Instagram" title="Instagram" target="_blank" rel="noopener"><img src="icons/instagram.svg" alt="Instagram" width="22" height="22"></a>
+                        <a href="#" class="social-link" aria-label="YouTube" title="YouTube"><img src="icons/youtube.svg" alt="YouTube" width="22" height="22"></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Navigation</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="#">À propos</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Équipe</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Catégories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Politique</a></li>
+                        <li><a href="#">Économie</a></li>
+                        <li><a href="#">Sport</a></li>
+                        <li><a href="#">Culture</a></li>
+                        <li><a href="#">Technologie</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Légal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Mentions légales</a></li>
+                        <li><a href="#">Politique de confidentialité</a></li>
+                        <li><a href="#">Conditions d'utilisation</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hessouss. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
