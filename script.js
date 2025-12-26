@@ -683,7 +683,7 @@ function setupAIReader(refs) {
         const u = new SpeechSynthesisUtterance(chunk);
         const v = getSelectedVoice();
         if (v) u.voice = v;
-        u.rate = parseFloat(aiRate?.value || '1.0');
+        u.rate = 2.0;
         u.onend = () => {
             ttsIndex++;
             speakNext();
