@@ -140,13 +140,35 @@
             </div>
         </div>
     </footer>
-    <div id="aiHidden" style="display:none">
-        <button id="aiPlay"></button>
-        <select id="aiVoice"></select>
-        <div id="aiReaderMsg"></div>
-    </div>
+    <section class="card" id="aiPanel">
+        <h3 style="margin-bottom:var(--spacing-sm);">Assistant IA</h3>
+        <div id="aiReaderMsg" style="color:var(--text-secondary);min-height:24px;margin-bottom:8px;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-sm);align-items:center;margin-bottom:8px;">
+            <div>
+                <label style="display:block;margin-bottom:6px;">Voix arabe</label>
+                <select id="aiVoice" class="select"></select>
+            </div>
+            <div>
+                <label style="display:block;margin-bottom:6px;">Vitesse</label>
+                <input id="aiRate" type="range" min="0.8" max="2.0" step="0.2" value="2.0" style="width:100%;">
+            </div>
+        </div>
+        <div style="display:flex;gap:var(--spacing-sm);flex-wrap:wrap;margin-bottom:8px;">
+            <button id="aiPlay" class="primary-btn">▶️ Lire</button>
+            <button id="aiPause" class="secondary-btn">⏸️ Pause</button>
+            <button id="aiResume" class="secondary-btn">⏯️ Reprendre</button>
+            <button id="aiStop" class="secondary-btn">⏹️ Arrêter</button>
+            <button id="aiSummarize" class="secondary-btn">🧠 Résumer</button>
+        </div>
+        <div id="aiSummary" style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:10px;min-height:40px;color:var(--text-secondary);"></div>
+    </section>
     <div class="ai-fab" id="aiFab" aria-label="Assistant IA">
         <img src="logo.png" alt="Hessouss AI" width="28" height="28">
+    </div>
+    <div id="aiFabOverlay" class="ai-fab-overlay"></div>
+    <div id="aiFabPanel" class="ai-fab-panel">
+        <button id="aiPlayFab" class="primary-btn" onclick="document.getElementById('aiPlay').click()">▶️ Lire</button>
+        <button id="aiSummarizeFab" class="secondary-btn" onclick="document.getElementById('aiSummarize').click()">🧠 Résumer</button>
     </div>
 
     <script src="script.js"></script>
