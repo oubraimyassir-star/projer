@@ -990,6 +990,17 @@ body {
     }
 }
 
+@media (max-width: 360px) {
+    .logo-text { font-size: 1.3rem; }
+    .nav-link { font-size: 0.8rem; }
+    .hero-title { font-size: 1.4rem; }
+    .article-title { font-size: 1.2rem; }
+    .rtl-article .article-title { font-size: 1.2rem; }
+    .article-body { font-size: 0.94rem; }
+    .news-title { font-size: 1.1rem; }
+    .news-excerpt { font-size: 0.9rem; }
+}
+
 /* ===================================
    UTILITY CLASSES
    =================================== */
