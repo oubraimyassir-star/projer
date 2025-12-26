@@ -844,11 +844,31 @@ document.addEventListener('DOMContentLoaded', () => {
     applyAdminOverrides();
     const mobileBtn = document.getElementById('mobileMenuBtn');
     const navMenu = document.querySelector('.nav-menu');
+    const mobileOverlay = document.getElementById('mobileOverlay');
     if (mobileBtn && navMenu) {
         mobileBtn.addEventListener('click', () => {
             navMenu.classList.toggle('open');
+            const opened = navMenu.classList.contains('open');
+            if (mobileOverlay) mobileOverlay.style.display = opened ? 'block' : 'none';
+            document.body.style.overflow = opened ? 'hidden' : '';
         });
     }
+    if (mobileOverlay && navMenu) {
+        mobileOverlay.addEventListener('click', () => {
+            navMenu.classList.remove('open');
+            mobileOverlay.style.display = 'none';
+            document.body.style.overflow = '';
+        });
+    }
+    document.querySelectorAll('.nav-link').forEach(a => {
+        a.addEventListener('click', () => {
+            if (navMenu.classList.contains('open')) {
+                navMenu.classList.remove('open');
+                if (mobileOverlay) mobileOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+    });
     // Si on est sur la page article
     if (isArticlePage) {
         renderArticlePage();
