@@ -26,6 +26,45 @@ async function fetchServerAdminData() {
     } catch {}
 }
 
+async function fetchExternalApiNews() {
+    try {
+        let res = await fetch('hessouss-api.json', { cache: 'no-store' });
+        if (!res.ok) {
+            res = await fetch('https://www.hessouss.com/hessouss-api.json', { cache: 'no-store' });
+        }
+        if (res.ok) {
+            const api = await res.json();
+            if (Array.isArray(api.items) && api.items.length) {
+                newsData = api.items.map(n => ({
+                    id: n.id,
+                    category: n.category,
+                    title: n.title,
+                    excerpt: n.excerpt,
+                    content: n.content,
+                    date: n.date,
+                    image: n.image || getFallbackImage(n.category),
+                    featured: !!n.featured,
+                    link: n.link,
+                    tags: n.tags
+                }));
+                if (api.featuredId) {
+                    localStorage.setItem('featuredOverrideId', String(api.featuredId));
+                }
+                if (api.recommendations && typeof api.recommendations === 'object') {
+                    localStorage.setItem('recommendedOverrides', JSON.stringify(api.recommendations));
+                }
+                mergeDraftsIntoNews();
+                applyAdminOverrides();
+                renderHero();
+                renderHomeExtras();
+                renderNews(currentCategory);
+                observeNewsCards();
+                return true;
+            }
+        }
+    } catch {}
+    return false;
+}
 // News Data (Fallback statique)
 let newsData = [
     {
@@ -930,15 +969,18 @@ document.addEventListener('DOMContentLoaded', () => {
             showFabToast('Écouter');
         });
     }
-    fetchServerAdminData().then(() => {
+    fetchServerAdminData().then(async () => {
         if (isArticlePage) {
             renderArticlePage();
         } else {
-            renderHero();
-            renderHomeExtras();
-            renderNews();
-            observeNewsCards();
-            fetchNews();
+            const loaded = await fetchExternalApiNews();
+            if (!loaded) {
+                renderHero();
+                renderHomeExtras();
+                renderNews();
+                observeNewsCards();
+                fetchNews();
+            }
         }
     });
     // Activer le filtrage via paramètre d'URL ?category=...
