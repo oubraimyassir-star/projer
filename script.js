@@ -59,6 +59,8 @@ async function fetchExternalApiNews() {
                 renderHomeExtras();
                 renderNews(currentCategory);
                 observeNewsCards();
+                const loader = document.getElementById('newsLoader');
+                if (loader) loader.style.display = 'none';
                 return true;
             }
         }
